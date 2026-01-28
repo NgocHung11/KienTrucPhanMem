@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - app1
+      - app2
+
+  app1:
+    build: .
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+
+  app2:
+    build: .
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      - db
+      - redis
+      - rabbitmq
+
+  db:
+    image: mariadb:10.6
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: movie_db
+    ports:
+      - "3306:3306"
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
