@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subject Manager</title>
+  <link rel="stylesheet" href="/index.css" />
+</head>
+<body>
+  <main class="container">
+    <h1>Quản lý môn học</h1>
+
+    <% if (success) { %>
+      <div class="alert success"><%= success %></div>
+    <% } %>
+
+    <% if (error) { %>
+      <div class="alert error"><%= error %></div>
+    <% } %>
+
+    <section class="card">
+      <h2>Thêm môn học</h2>
+      <form action="/subjects" method="POST" enctype="multipart/form-data" class="form-grid">
+        <input name="name" placeholder="Tên môn" required />
+        <input name="type" placeholder="Loại môn" required />
+        <input name="semester" placeholder="Học kỳ" required />
+        <input name="faculty" placeholder="Khoa" required />
+        <input name="image" placeholder="Link ảnh (nếu không upload file)" />
+        <input name="imageFile" type="file" accept="image/*" />
+        <button type="submit">Tạo mới</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Danh sách môn học</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Loại</th>
+            <th>Học kỳ</th>
+            <th>Khoa</th>
+            <th>Ảnh</th>
+            <th>Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (!subjects || subjects.length === 0) { %>
+            <tr><td colspan="7">Chưa có dữ liệu</td></tr>
+          <% } %>
+          <% subjects.forEach(function(item) { %>
+            <tr>
+              <td><%= item.id %></td>
+              <td><%= item.name %></td>
+              <td><%= item.type %></td>
+              <td><%= item.semester %></td>
+              <td><%= item.faculty %></td>
+              <td>
+                <% if (item.image) { %>
+                  <a href="<%= item.image %>" target="_blank" rel="noreferrer">Xem ảnh</a>
+                <% } else { %>
+                  -
+                <% } %>
+              </td>
+              <td>
+                <form action="/subjects/<%= item.id %>/update" method="POST" enctype="multipart/form-data" class="inline-form">
+                  <input type="hidden" name="nameKey" value="<%= item.name %>" />
+                  <input type="hidden" name="currentImage" value="<%= item.image || '' %>" />
+                  <input name="type" value="<%= item.type %>" required />
+                  <input name="semester" value="<%= item.semester %>" required />
+                  <input name="faculty" value="<%= item.faculty %>" required />
+                  <input name="image" placeholder="Link ảnh mới" />
+                  <input name="imageFile" type="file" accept="image/*" />
+                  <button type="submit">Cập nhật</button>
+                </form>
+                <form action="/subjects/<%= item.id %>/delete" method="POST" class="inline-form delete-form">
+                  <input type="hidden" name="nameKey" value="<%= item.name %>" />
+                  <button type="submit">Xóa</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>
