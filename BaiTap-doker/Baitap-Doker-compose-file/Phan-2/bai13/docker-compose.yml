@@ -1,0 +1,7 @@
+services:
+  react-web:
+    build:
+      context: .
+    ports:
+      - "8085:80"
+    restart: always

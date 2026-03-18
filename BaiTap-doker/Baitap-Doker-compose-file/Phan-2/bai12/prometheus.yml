@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 15s # Chu kỳ thu thập dữ liệu (15 giây)
+
+scrape_configs:
+  # Job thu thập dữ liệu của chính Prometheus
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Job thu thập dữ liệu của Node Exporter (Lấy thông tin hệ thống)
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['node-exporter:9100']

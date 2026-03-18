@@ -1,0 +1,28 @@
+services:
+  # Cấu hình Prometheus đóng vai trò Database lưu trữ Metrics 
+  prometheus:
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+
+  # Cấu hình Grafana đóng vai trò vẽ biểu đồ báo cáo
+  grafana:
+    image: grafana/grafana:latest
+    restart: always
+    depends_on:
+      - prometheus
+    ports:
+      - "3012:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  # Cấu hình Node Exporter lấy chỉ số tài nguyên của máy (CPU, RAM, Disk)
+  node-exporter:
+    image: prom/node-exporter:latest
+    restart: always
+    ports:
+      - "9100:9100"
